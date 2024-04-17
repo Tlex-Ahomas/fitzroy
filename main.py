@@ -1,2 +1,7 @@
+from recipieProcessor import RecipieProcessor
+
 def main():
-    print("Hello World!")
+    rp = RecipieProcessor()
+    rp.load_recipies("recipes.json")
+
+main()

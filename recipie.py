@@ -4,15 +4,16 @@ import urllib.request
 import requests
 
 class Recipie:
-    img_count = 0
-    def __init__(self):
-        self.name = ""
-        self.description = ""
-        self.recipie_yield = 0
-        self.prep_time = datetime.datetime
-        self.cook_time = datetime.datetime
-        self.image = f"image{Recipie.img_count}.jpg"
-        Recipie.img_count += 1
+    def __init__(self, name, desc, img_url, _yield, cook_t, prep_t, ingredients):
+        self.name = name
+        self.description = desc
+        self.recipie_yield = _yield
+        self.prep_time = prep_t
+        self.cook_time = cook_t
+        self.ingredients = ingredients
+        self.image_url = img_url
+        img_name = img_url.split("/")
+        self.image = img_name[len(img_name)-1]
 
     def get_name(self):
         return self.name
