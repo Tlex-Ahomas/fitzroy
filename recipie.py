@@ -12,7 +12,7 @@ class Recipie:
         self.cook_time = cook_t
         self.ingredients = ingredients
         self.image_url = img_url
-        img_name = img_url.split("/")
+        img_name = img_url.split("/") # image name is end of url
         self.image = img_name[len(img_name)-1]
 
     def get_name(self):
@@ -27,10 +27,14 @@ class Recipie:
     def get_recipie_yield(self):
         return self.recipie_yield
 
+    # downloads image from url
     def set_image(self, url):
-        bytes = requests.get(url).content
-        img_file = open(self.image, "wb")
-        img_file.write(bytes)
+        try:
+            bytes = requests.get(url).content
+            img_file = open(self.image, "wb")
+            img_file.write(bytes)
+        except Exception as e:
+            self.image = "img_not_found.png"
 
     def get_image(self):
         return self.image
