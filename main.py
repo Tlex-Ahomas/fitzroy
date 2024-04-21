@@ -1,7 +1,7 @@
-from recipieProcessor import RecipieProcessor
+from recipeProcessor import RecipeProcessor
 
 def main():
-    rp = RecipieProcessor()
-    rp.load_recipies("recipes.json")
+    rp = RecipeProcessor()
+    rp.load_recipes("recipes.json")
 
 main()

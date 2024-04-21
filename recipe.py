@@ -3,7 +3,7 @@ import dateparser
 import urllib.request
 import requests
 
-class Recipie:
+class Recipe:
     def __init__(self, name, desc, img_url, _yield, cook_t, prep_t, ingredients):
         self.name = name
         self.description = desc
@@ -24,7 +24,7 @@ class Recipie:
     def get_cook_time(self):
         return self.cook_time
 
-    def get_recipie_yield(self):
+    def get_recipe_yield(self):
         return self.recipie_yield
 
     # downloads image from url
