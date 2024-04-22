@@ -46,13 +46,13 @@ class RecipeDetails(QDialog):
         prep = QLabel(str(currentRecipe.get_prep_time()))
         cook = QLabel(str(currentRecipe.get_cook_time()))
         description = QLabel(str(currentRecipe.get_description()))
+        description.setWordWrap(True)
         ingredients = ""
         for item in currentRecipe.get_ingredients():
             ingredients = ingredients + item + "\n"
         ingredients = QLabel(ingredients)
 
-        self.grid.addWidget(label, 0, 0)
-        self.grid.setColumnStretch(0, 2) # stretch won't work?
+        self.grid.addWidget(label, 0, 0, 1, 0)
         self.grid.addWidget(num, 1, 1)
         self.grid.addWidget(name, 2, 1)
         self.grid.addWidget(prep, 3, 1)
