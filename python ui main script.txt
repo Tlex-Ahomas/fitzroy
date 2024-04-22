@@ -1,0 +1,11 @@
+def main():
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    recipe_window = QtWidgets.QMainWindow()
+    ui = Ui_RecipeWindow()
+    ui.setupUi(recipe_window)
+    recipe_window.show()
+    sys.exit(app.exec_())
+
+    
+main()

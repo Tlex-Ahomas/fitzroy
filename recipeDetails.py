@@ -57,6 +57,7 @@ class RecipeDetails(QDialog):
         self.grid.addWidget(ingredients, 6, 1)
 
         self.setLayout(self.grid)
+        gui.show()
 
 def main():
     app = QApplication(sys.argv)
@@ -66,4 +67,3 @@ def main():
     gui.displayRecipe(2)
     gui.show()
     sys.exit(app.exec_())
-main()
