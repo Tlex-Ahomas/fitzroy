@@ -13,25 +13,16 @@ class RecipeDetails(QDialog):
         self.scroll_area.setGeometry(0, 130, 591, 161)
         self.scroll_area.setWidgetResizable(True)
 
-        num_label = QLabel("Recipe #: ")
-        name_label = QLabel("Recipe Name: ")
-        prep_label = QLabel("Prep Time: ")
-        cook_label = QLabel("Cook Time: ")
-        description_label = QLabel("Description: ")
-        ingredients_label = QLabel("Ingredients: ")
-
         self.grid = QGridLayout()
         self.grid.addWidget(self.scroll_area)
-        self.grid.addWidget(num_label, 1, 0)
-        self.grid.addWidget(name_label, 2, 0)
-        self.grid.addWidget(prep_label, 3, 0)
-        self.grid.addWidget(cook_label, 4, 0)
-        self.grid.addWidget(description_label, 5, 0)
-        self.grid.addWidget(ingredients_label, 6, 0)
+
+        self.labels()
 
         self.setLayout(self.grid)
 
     def displayRecipe(self, recipe_num):
+        self.clear()
+        self.labels()
         currentRecipe = self.recipe_processor.get_recipe(recipe_num)
         recipe_img = currentRecipe.get_image()
         recipe_img = open(recipe_img, "rb").read()
@@ -51,6 +42,7 @@ class RecipeDetails(QDialog):
         for item in currentRecipe.get_ingredients():
             ingredients = ingredients + item + "\n"
         ingredients = QLabel(ingredients)
+        recipe_yield = QLabel(str(currentRecipe.get_recipe_yield()))
 
         self.grid.addWidget(label, 0, 0, 1, 0)
         self.grid.addWidget(num, 1, 1)
@@ -59,9 +51,31 @@ class RecipeDetails(QDialog):
         self.grid.addWidget(cook, 4, 1)
         self.grid.addWidget(description, 5, 1)
         self.grid.addWidget(ingredients, 6, 1)
+        self.grid.addWidget(recipe_yield, 7, 1)
 
         self.setLayout(self.grid)
         self.show()
+
+    def clear(self):
+        for i in reversed(range(self.grid.count())):
+            self.grid.itemAt(i).widget().setParent(None)
+
+    def labels(self):
+        num_label = QLabel("Recipe #: ")
+        name_label = QLabel("Recipe Name: ")
+        prep_label = QLabel("Prep Time: ")
+        cook_label = QLabel("Cook Time: ")
+        description_label = QLabel("Description: ")
+        ingredients_label = QLabel("Ingredients: ")
+        recipe_yield_label = QLabel("Recipe Yield: ")
+
+        self.grid.addWidget(num_label, 1, 0)
+        self.grid.addWidget(name_label, 2, 0)
+        self.grid.addWidget(prep_label, 3, 0)
+        self.grid.addWidget(cook_label, 4, 0)
+        self.grid.addWidget(description_label, 5, 0)
+        self.grid.addWidget(ingredients_label, 6, 0)
+        self.grid.addWidget(recipe_yield_label, 7, 0)
 
 def main():
     app = QApplication(sys.argv)
