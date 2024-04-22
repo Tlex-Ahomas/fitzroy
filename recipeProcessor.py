@@ -3,6 +3,7 @@ import json
 
 
 class RecipeProcessor:
+    recipes = []
     def __init__(self):
         self.recipes = []
 
@@ -36,3 +37,5 @@ class RecipeProcessor:
         if 0 <= ind < len(self.recipes):
             return self.recipes[ind]
         raise Exception('index out of bounds')
+
+recipeProcessor = RecipeProcessor()
