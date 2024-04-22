@@ -18,6 +18,9 @@ class Recipe:
     def get_name(self):
         return self.name
 
+    def get_description(self):
+        return self.description
+
     def get_prep_time(self):
         return self.prep_time
 
@@ -26,6 +29,9 @@ class Recipe:
 
     def get_recipe_yield(self):
         return self.recipie_yield
+
+    def get_ingredients(self):
+        return self.ingredients
 
     # downloads image from url
     def set_image(self, url):
