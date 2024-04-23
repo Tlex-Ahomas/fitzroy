@@ -19,7 +19,7 @@ class RecipeDetails(QDialog):
 
         self.setLayout(self.grid)
 
-    def display_recipe(self, recipe_num):
+    def displayRecipe(self, recipe_num):
         self.clear()
         self.labels()
         current_recipe = self.recipe_processor.get_recipe(recipe_num)
@@ -42,7 +42,7 @@ class RecipeDetails(QDialog):
         
         scroll_ing = QScrollArea()
         scroll_ing.setWidget(ingredients)
-        recipe_yield = QLabel(str(currentRecipe.get_recipe_yield()))
+        recipe_yield = QLabel(str(current_recipe.get_recipe_yield()))
 
 
         self.grid.addWidget(label, 0, 0, 1, 0)
@@ -83,6 +83,6 @@ def main():
     rp = RecipeProcessor()
     rp.load_recipes("recipes.json")
     gui = RecipeDetails(rp)
-    gui.display_recipe(2)
+    gui.displayRecipe(2)
     gui.show()
     sys.exit(app.exec_())
