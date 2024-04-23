@@ -32,19 +32,26 @@ class RecipeDetails(QDialog):
         cook = QLabel(str(current_recipe.get_cook_time()))
         description = QLabel(str(current_recipe.get_description()))
         description.setWordWrap(True)
+        scroll_desc = QScrollArea()
+        scroll_desc.setWidget(description)
         ingredients = ""
         for item in current_recipe.get_ingredients():
             ingredients = ingredients + item + "\n"
         ingredients = QLabel(ingredients)
         recipe_yield = QLabel(str(current_recipe.get_recipe_yield()))
+        
+        scroll_ing = QScrollArea()
+        scroll_ing.setWidget(ingredients)
+        recipe_yield = QLabel(str(currentRecipe.get_recipe_yield()))
+
 
         self.grid.addWidget(label, 0, 0, 1, 0)
         self.grid.addWidget(num, 1, 1)
         self.grid.addWidget(name, 2, 1)
         self.grid.addWidget(prep, 3, 1)
         self.grid.addWidget(cook, 4, 1)
-        self.grid.addWidget(description, 5, 1)
-        self.grid.addWidget(ingredients, 6, 1)
+        self.grid.addWidget(scroll_desc, 5, 1)
+        self.grid.addWidget(scroll_ing, 6, 1)
         self.grid.addWidget(recipe_yield, 7, 1)
 
         self.setLayout(self.grid)
