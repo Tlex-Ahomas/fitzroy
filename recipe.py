@@ -1,6 +1,4 @@
-import datetime
-import dateparser
-import urllib.request
+from isoduration import parse_duration, format_duration
 import requests
 
 class Recipe:
@@ -8,12 +6,21 @@ class Recipe:
         self.name = name
         self.description = desc
         self.recipie_yield = _yield
-        self.prep_time = prep_t
-        self.cook_time = cook_t
+        self.prep_time = self.parse_times(prep_t)
+        self.cook_time = self.parse_times(cook_t)
         self.ingredients = ingredients
         self.image_url = img_url
         img_name = img_url.split("/") # image name is end of url
         self.image = img_name[len(img_name)-1]
+
+    def parse_times(self, t):
+        if len(t.strip()) == 0:
+            return ""
+        try:
+            dur = parse_duration(t)
+            return f"{dur.time.hours + dur.time.minutes//60}:{dur.time.minutes%60 + dur.time.seconds//60}"
+        except Exception as e:
+            return t
 
     def get_name(self):
         return self.name

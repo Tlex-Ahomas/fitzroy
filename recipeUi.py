@@ -21,25 +21,36 @@ class RecipeUi(object):
         self.filtered_search = False
         # PyQt designer version of __init__
         RecipeUi.setWindowTitle("RecipeUI")
-
+        self.layout = RecipeUi
         # Current position on page
-        self._current_page_idx = 1
+        self._current_page_idx = 0
         self._temp_page_idx = 0
 
         RecipeUi.setObjectName("RecipeUi")
-        RecipeUi.resize(840, 640)
-        self.central_widget = QtWidgets.QWidget(RecipeUi)
+        RecipeUi.resize(1000, 790)
+
+        # Load up recipe processor
+        self._recipe_processor = RecipeProcessor()
+        self._recipe_processor.load_recipes("recipes.json")
+        self._recipes = self._recipe_processor.get_recipe_list()
+        self.setup_2(self._recipes[0:8])
+
+    def setup_2(self, page_recipes):
+        self.central_widget = QtWidgets.QWidget(self.layout)
         self.central_widget.setObjectName("central_widget")
         self.grid_layout_widget = QtWidgets.QWidget(self.central_widget)
-        self.grid_layout_widget.setGeometry(QtCore.QRect(10, 40, 791, 531))
+        self.grid_layout_widget.setGeometry(QtCore.QRect(10, 40, 1000, 660))
         self.grid_layout_widget.setObjectName("grid_layout_widget")
         self.recipe_grid = QtWidgets.QGridLayout(self.grid_layout_widget)
         self.recipe_grid.setContentsMargins(0, 0, 0, 0)
         self.recipe_grid.setObjectName("recipe_grid")
+        self.recipe_grid.setColumnStretch(0, 1)
+        self.recipe_grid.setColumnStretch(1, 1)
+        self.recipe_grid.setColumnStretch(2, 1)
+        self.recipe_grid.setColumnStretch(3, 1)
+
         self.bottom_row_grid = QtWidgets.QGridLayout()
         self.bottom_row_grid.setObjectName("bottom_row_grid")
-
-
         self.box_7 = QtWidgets.QGridLayout()
         self.box_7.setObjectName("box_7")
         self.recipe_img_7 = QtWidgets.QGridLayout()
@@ -429,7 +440,7 @@ class RecipeUi(object):
         self.top_row_grid.addLayout(self.box_4, 0, 3, 1, 1)
         self.recipe_grid.addLayout(self.top_row_grid, 0, 0, 1, 1)
         self.grid_layout_widget_2 = QtWidgets.QWidget(self.central_widget)
-        self.grid_layout_widget_2.setGeometry(QtCore.QRect(10, 0, 791, 41))
+        self.grid_layout_widget_2.setGeometry(QtCore.QRect(10, 0, 850, 41))
         self.grid_layout_widget_2.setObjectName("grid_layout_widget_2")
         self.search_grid = QtWidgets.QGridLayout(self.grid_layout_widget_2)
         self.search_grid.setContentsMargins(0, 0, 0, 0)
@@ -444,7 +455,7 @@ class RecipeUi(object):
         self.reset_button.setObjectName("reset_button")
         self.search_grid.addWidget(self.reset_button, 0, 2, 1, 1)
         self.grid_layout_widget_3 = QtWidgets.QWidget(self.central_widget)
-        self.grid_layout_widget_3.setGeometry(QtCore.QRect(510, 570, 320, 51))
+        self.grid_layout_widget_3.setGeometry(QtCore.QRect(520, 710, 320, 51))
         self.grid_layout_widget_3.setObjectName("grid_layout_widget_3")
         self.pagination_buttons = QtWidgets.QGridLayout(self.grid_layout_widget_3)
         self.pagination_buttons.setContentsMargins(0, 0, 0, 0)
@@ -461,10 +472,10 @@ class RecipeUi(object):
         self.last_button = QtWidgets.QPushButton(self.grid_layout_widget_3)
         self.last_button.setObjectName("last_button")
         self.pagination_buttons.addWidget(self.last_button, 0, 2, 1, 1)
-        RecipeUi.setCentralWidget(self.central_widget)
-        self.status_bar = QtWidgets.QStatusBar(RecipeUi)
+        self.layout.setCentralWidget(self.central_widget)
+        self.status_bar = QtWidgets.QStatusBar(self.layout)
         self.status_bar.setObjectName("status_bar")
-        RecipeUi.setStatusBar(self.status_bar)
+        self.layout.setStatusBar(self.status_bar)
         self._temp_list = []
 
         # List of image, recipe name, prep time, and cook time layouts for easy access:
@@ -483,32 +494,34 @@ class RecipeUi(object):
         self._cook_layouts = [self.label_44, self.label_48, self.label_52, self.label_56, self.label_60, self.label_64,
                               self.label_68, self.label_72]
 
-        self.retranslate_ui(RecipeUi)
-        QtCore.QMetaObject.connectSlotsByName(RecipeUi)
+        self.retranslate_ui(self.layout)
+        QtCore.QMetaObject.connectSlotsByName(self.layout)
 
-        # Load up recipe processor
-        self._recipe_processor = RecipeProcessor()
-        self._recipe_processor.load_recipes("recipes.json")
-        self._recipes = self._recipe_processor.get_recipe_list()
+
 
         # Child dialogue class with recipe processor
         self._dialogue = RecipeDetails(self._recipe_processor)
 
-        self._begin_recipes = []
-        for i in range(8):
-            self._begin_recipes.append(self._recipes[i])
 
-        self.layout_ui(self._begin_recipes)
+        self.layout_ui(page_recipes)
 
     def layout_ui(self, recipes):
         # Initially, load first 8 images and their respective descriptions
         for i in range(8):
             self._rand_recipe = recipes[i]
-            self.insert_details(i, self._rand_recipe, i + 1)
+            self.insert_details(i, self._rand_recipe, self._current_page_idx+i+1)
 
         self.status_bar.showMessage(
             f"Displaying 1-8 of {self._recipe_processor.get_num_recipes()} recipes")
         self.home()
+
+    def clear_layout(self):
+        for i in reversed(range(self.recipe_grid.count())):
+            if self.recipe_grid.itemAt(i) == None:
+                continue
+            w_to_remove = self.recipe_grid.itemAt(i).widget()
+            self.recipe_grid.removeWidget(w_to_remove)
+            #w_to_remove.setParent(None)
 
 
     # Method to insert image into appropriate label
@@ -535,42 +548,54 @@ class RecipeUi(object):
         self._cook_layouts[box_no].setText(_translate("RecipeUi", str(recipe.get_cook_time())))
 
     def home(self):
-        self.next_button.clicked.connect(self.next)
-        self.previous_button.clicked.connect(self.prev)
-        self.first_button.clicked.connect(self.first)
-        self.last_button.clicked.connect(self.last)
+        self.next_button.clicked.connect(self.next_2)
+        self.previous_button.clicked.connect(self.prev_2)
+        self.first_button.clicked.connect(self.first_2)
+        self.last_button.clicked.connect(self.last_2)
         self.search_button.clicked.connect(lambda clicked, text=self.search_bar.text(): self.search(text))
         self.reset_button.clicked.connect(self.reset)
         self.push_button.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx - 1: self._dialogue.displayRecipe(recipe_num))
-        self.push_button_2.clicked.connect(
             lambda clicked, recipe_num=self._current_page_idx: self._dialogue.displayRecipe(recipe_num))
-        self.push_button_3.clicked.connect(
+        self.push_button_2.clicked.connect(
             lambda clicked, recipe_num=self._current_page_idx + 1: self._dialogue.displayRecipe(recipe_num))
-        self.push_button_4.clicked.connect(
+        self.push_button_3.clicked.connect(
             lambda clicked, recipe_num=self._current_page_idx + 2: self._dialogue.displayRecipe(recipe_num))
-        self.push_button_5.clicked.connect(
+        self.push_button_4.clicked.connect(
             lambda clicked, recipe_num=self._current_page_idx + 3: self._dialogue.displayRecipe(recipe_num))
-        self.push_button_6.clicked.connect(
+        self.push_button_5.clicked.connect(
             lambda clicked, recipe_num=self._current_page_idx + 4: self._dialogue.displayRecipe(recipe_num))
-        self.push_button_7.clicked.connect(
+        self.push_button_6.clicked.connect(
             lambda clicked, recipe_num=self._current_page_idx + 5: self._dialogue.displayRecipe(recipe_num))
-        self.push_button_8.clicked.connect(
+        self.push_button_7.clicked.connect(
             lambda clicked, recipe_num=self._current_page_idx + 6: self._dialogue.displayRecipe(recipe_num))
+        self.push_button_8.clicked.connect(
+            lambda clicked, recipe_num=self._current_page_idx + 7: self._dialogue.displayRecipe(recipe_num))
 
     # Iterate through all lists to see if string is present in strings: creates new list to search through
     def search(self, recipe_keywords):
         self._filtered_list = []
         for recipe in self._recipes:
-            if recipe_keywords in recipe.get_name() or recipe_keywords in recipe.get_description() or recipe_keywords in recipe.get_ingredients():
+            search_str = recipe.get_name() + recipe.get_description()
+            if recipe_keywords in search_str:
                 self._filtered_list.append(recipe)
                 self.filtered_search = True
 
         if len(self._filtered_list) != 0:
-            for rec in self._filtered_list:
-                print(rec.get_name())
-            self.next()
+            self.clear_layout()
+            self._current_page_idx = 0
+            self.setup_2(self._filtered_list[self._current_page_idx:self._current_page_idx+8])
 
+    def next_2(self):
+        self._temp_list = self._recipe_processor.get_recipe_list()
+
+        if self.filtered_search:
+            self._temp_list = self._filtered_list
+
+        self.clear_layout()
+        self._current_page_idx += 8
+        if self._current_page_idx > len(self._temp_list):
+            self._current_page_idx -= 8
+        self.setup_2(self._temp_list[self._current_page_idx:self._current_page_idx+8])
     # Display next set of images
     def next(self):
         self._temp_list = self._recipe_processor.get_recipe_list()
@@ -591,6 +616,7 @@ class RecipeUi(object):
 
             self._current_page_idx += 8
             self._temp_page_idx = self._current_page_idx - 1
+
             i = 0
             while self._temp_page_idx < len(self._temp_list) and i < 8:
                 self.insert_details(i, self._temp_list[self._temp_page_idx], self._temp_page_idx)
@@ -598,6 +624,19 @@ class RecipeUi(object):
                 i += 1
 
             self.status_bar.showMessage(f"Displaying {self._current_page_idx}-{self._temp_page_idx} of {len(self._temp_list)} recipes")
+
+    def prev_2(self):
+        self._temp_list = self._recipe_processor.get_recipe_list()
+
+        # If there are more things to display, go to next page
+        if self.filtered_search == True:
+            self._temp_list = self._filtered_list
+
+        self.clear_layout()
+        self._current_page_idx -= 8
+        if self._current_page_idx < 0:
+            self._current_page_idx = 0
+        self.setup_2(self._temp_list[self._current_page_idx:self._current_page_idx+8])
 
     def prev(self):
         self._temp_list = self._recipe_processor.get_recipe_list()
@@ -628,6 +667,16 @@ class RecipeUi(object):
 
             self.status_bar.showMessage(f"Displaying {self._current_page_idx}-{self._max} of {len(self._temp_list)} recipes")
 
+    def first_2(self):
+        self._temp_list = self._recipe_processor.get_recipe_list()
+
+        # If there are more things to display, go to next page
+        if self.filtered_search == True:
+            self._temp_list = self._filtered_list
+
+        self.clear_layout()
+        self._current_page_idx = 0
+        self.setup_2(self._temp_list[self._current_page_idx:self._current_page_idx+8])
 
     def first(self):
         self._temp_list = self._recipe_processor.get_recipe_list()
@@ -658,6 +707,17 @@ class RecipeUi(object):
 
         self.status_bar.showMessage(
             f"Displaying 1-8 of {len(self._temp_list)} recipes")
+
+    def last_2(self):
+        self._temp_list = self._recipe_processor.get_recipe_list()
+
+        # If there are more things to display, go to next page
+        if self.filtered_search == True:
+            self._temp_list = self._filtered_list
+
+        self.clear_layout()
+        self._current_page_idx = len(self._temp_list) - 8
+        self.setup_2(self._temp_list[self._current_page_idx:self._current_page_idx+8])
 
     def last(self):
         self._temp_list = self._recipe_processor.get_recipe_list()
@@ -691,7 +751,7 @@ class RecipeUi(object):
         self._temp_list.clear()
         self._filtered_list = []
         self.filtered_search = False
-        self.first()
+        self.first_2()
 
     def retranslate_ui(self, RecipeUi):
         _translate = QtCore.QCoreApplication.translate
