@@ -571,6 +571,7 @@ class RecipeUi(object):
         self.push_button_8.clicked.connect(
             lambda clicked, recipe_num=self._current_page_idx + 7: self._dialogue.displayRecipe(recipe_num))
 
+
     # Iterate through all lists to see if string is present in strings: creates new list to search through
     def search(self, recipe_keywords):
         self._filtered_list = []
