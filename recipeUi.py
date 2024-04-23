@@ -542,21 +542,21 @@ class RecipeUi(object):
         self.search_button.clicked.connect(lambda clicked, text=self.search_bar.text(): self.search(text))
         self.reset_button.clicked.connect(self.reset)
         self.push_button.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx - 1: self._dialogue.displayRecipe(recipe_num))
+            lambda clicked, recipe_num=self._current_page_idx - 1: self._dialogue.display_recipe(recipe_num))
         self.push_button_2.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx: self._dialogue.displayRecipe(recipe_num))
+            lambda clicked, recipe_num=self._current_page_idx: self._dialogue.display_recipe(recipe_num))
         self.push_button_3.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx + 1: self._dialogue.displayRecipe(recipe_num))
+            lambda clicked, recipe_num=self._current_page_idx + 1: self._dialogue.display_recipe(recipe_num))
         self.push_button_4.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx + 2: self._dialogue.displayRecipe(recipe_num))
+            lambda clicked, recipe_num=self._current_page_idx + 2: self._dialogue.display_recipe(recipe_num))
         self.push_button_5.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx + 3: self._dialogue.displayRecipe(recipe_num))
+            lambda clicked, recipe_num=self._current_page_idx + 3: self._dialogue.display_recipe(recipe_num))
         self.push_button_6.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx + 4: self._dialogue.displayRecipe(recipe_num))
+            lambda clicked, recipe_num=self._current_page_idx + 4: self._dialogue.display_recipe(recipe_num))
         self.push_button_7.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx + 5: self._dialogue.displayRecipe(recipe_num))
+            lambda clicked, recipe_num=self._current_page_idx + 5: self._dialogue.display_recipe(recipe_num))
         self.push_button_8.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx + 6: self._dialogue.displayRecipe(recipe_num))
+            lambda clicked, recipe_num=self._current_page_idx + 6: self._dialogue.display_recipe(recipe_num))
 
     # Iterate through all lists to see if string is present in strings: creates new list to search through
     def search(self, recipe_keywords):

@@ -10,7 +10,6 @@ class RecipeDetails(QDialog):
         self.recipe_processor = recipe_processor
         self.setWindowTitle("Recipe Details")
         self.scroll_area = QScrollArea()
-        self.scroll_area.setGeometry(0, 130, 591, 161)
         self.scroll_area.setWidgetResizable(True)
 
         self.grid = QGridLayout()
@@ -20,29 +19,24 @@ class RecipeDetails(QDialog):
 
         self.setLayout(self.grid)
 
-    def displayRecipe(self, recipe_num):
+    def display_recipe(self, recipe_num):
         self.clear()
         self.labels()
-        currentRecipe = self.recipe_processor.get_recipe(recipe_num)
-        recipe_img = currentRecipe.get_image()
-        recipe_img = open(recipe_img, "rb").read()
-        my_image = QImage()
-        my_image.loadFromData(recipe_img)
-        recipe_img2 = QPixmap(currentRecipe.get_image())
+        current_recipe = self.recipe_processor.get_recipe(recipe_num)
+        recipe_img = QPixmap(current_recipe.get_image())
         label = QLabel(self)
-        label.setPixmap(recipe_img2)
-        #recipe_img = QLabel(recipe_img)
+        label.setPixmap(recipe_img)
         num = QLabel(str(recipe_num + 1))
-        name = QLabel(str(currentRecipe.get_name()))
-        prep = QLabel(str(currentRecipe.get_prep_time()))
-        cook = QLabel(str(currentRecipe.get_cook_time()))
-        description = QLabel(str(currentRecipe.get_description()))
+        name = QLabel(str(current_recipe.get_name()))
+        prep = QLabel(str(current_recipe.get_prep_time()))
+        cook = QLabel(str(current_recipe.get_cook_time()))
+        description = QLabel(str(current_recipe.get_description()))
         description.setWordWrap(True)
         ingredients = ""
-        for item in currentRecipe.get_ingredients():
+        for item in current_recipe.get_ingredients():
             ingredients = ingredients + item + "\n"
         ingredients = QLabel(ingredients)
-        recipe_yield = QLabel(str(currentRecipe.get_recipe_yield()))
+        recipe_yield = QLabel(str(current_recipe.get_recipe_yield()))
 
         self.grid.addWidget(label, 0, 0, 1, 0)
         self.grid.addWidget(num, 1, 1)
@@ -82,6 +76,6 @@ def main():
     rp = RecipeProcessor()
     rp.load_recipes("recipes.json")
     gui = RecipeDetails(rp)
-    gui.displayRecipe(2)
+    gui.display_recipe(2)
     gui.show()
     sys.exit(app.exec_())
