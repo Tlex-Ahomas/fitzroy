@@ -489,7 +489,7 @@ class RecipeUi(object):
         # Load up recipe processor
         self._recipe_processor = RecipeProcessor()
         self._recipe_processor.load_recipes("recipes.json")
-        self._recipes = self._recipe_processor.recipes
+        self._recipes = self._recipe_processor.get_recipe_list()
 
         # Child dialogue class with recipe processor
         self._dialogue = RecipeDetails(self._recipe_processor)
@@ -523,9 +523,9 @@ class RecipeUi(object):
         # Parent set to appropriate image grid
         self._pic_label = QLabel(self._img_layouts[box_no])
 
-        pixmap = QPixmap.fromImage(curr_image)
-        pixmap = pixmap.scaled(188, 124, Qt.KeepAspectRatio)
-        self._pic_label.setPixmap(pixmap)
+        new_pixmap = QPixmap.fromImage(curr_image)
+        new_pixmap = new_pixmap.scaled(188, 124, Qt.KeepAspectRatio)
+        self._pic_label.setPixmap(new_pixmap)
 
         # Do the same with all details and word wrap for name
         self._num_layouts[box_no].setText(_translate("RecipeUi", str(recipe_num)))
@@ -542,21 +542,21 @@ class RecipeUi(object):
         self.search_button.clicked.connect(lambda clicked, text=self.search_bar.text(): self.search(text))
         self.reset_button.clicked.connect(self.reset)
         self.push_button.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx: self._dialogue.displayRecipe(recipe_num))
+            lambda clicked, recipe_num=self._current_page_idx - 1: self._dialogue.displayRecipe(recipe_num))
         self.push_button_2.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx + 1: self._dialogue.displayRecipe(recipe_num))
+            lambda clicked, recipe_num=self._current_page_idx: self._dialogue.displayRecipe(recipe_num))
         self.push_button_3.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx + 2: self._dialogue.displayRecipe(recipe_num))
+            lambda clicked, recipe_num=self._current_page_idx + 1: self._dialogue.displayRecipe(recipe_num))
         self.push_button_4.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx + 3: self._dialogue.displayRecipe(recipe_num))
+            lambda clicked, recipe_num=self._current_page_idx + 2: self._dialogue.displayRecipe(recipe_num))
         self.push_button_5.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx + 4: self._dialogue.displayRecipe(recipe_num))
+            lambda clicked, recipe_num=self._current_page_idx + 3: self._dialogue.displayRecipe(recipe_num))
         self.push_button_6.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx + 5: self._dialogue.displayRecipe(recipe_num))
+            lambda clicked, recipe_num=self._current_page_idx + 4: self._dialogue.displayRecipe(recipe_num))
         self.push_button_7.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx + 6: self._dialogue.displayRecipe(recipe_num))
+            lambda clicked, recipe_num=self._current_page_idx + 5: self._dialogue.displayRecipe(recipe_num))
         self.push_button_8.clicked.connect(
-            lambda clicked, recipe_num=self._current_page_idx + 7: self._dialogue.displayRecipe(recipe_num))
+            lambda clicked, recipe_num=self._current_page_idx + 6: self._dialogue.displayRecipe(recipe_num))
 
     # Iterate through all lists to see if string is present in strings: creates new list to search through
     def search(self, recipe_keywords):
@@ -573,7 +573,7 @@ class RecipeUi(object):
 
     # Display next set of images
     def next(self):
-        self._temp_list = self._recipe_processor.recipes
+        self._temp_list = self._recipe_processor.get_recipe_list()
 
         # If there are more things to display, go to next page
         if self.filtered_search == True:
@@ -590,7 +590,7 @@ class RecipeUi(object):
                 self._cook_layouts[i].setText(_translate("RecipeUi", ""))
 
             self._current_page_idx += 8
-            self._temp_page_idx = self._current_page_idx
+            self._temp_page_idx = self._current_page_idx - 1
             i = 0
             while self._temp_page_idx < len(self._temp_list) and i < 8:
                 self.insert_details(i, self._temp_list[self._temp_page_idx], self._temp_page_idx)
@@ -600,7 +600,7 @@ class RecipeUi(object):
             self.status_bar.showMessage(f"Displaying {self._current_page_idx}-{self._temp_page_idx} of {len(self._temp_list)} recipes")
 
     def prev(self):
-        self._temp_list = self._recipe_processor.recipes
+        self._temp_list = self._recipe_processor.get_recipe_list()
 
         # If there are more things to display, go to next page
         if self.filtered_search == True:
@@ -630,7 +630,7 @@ class RecipeUi(object):
 
 
     def first(self):
-        self._temp_list = self._recipe_processor.recipes
+        self._temp_list = self._recipe_processor.get_recipe_list()
 
         # If there are more things to display, go to next page
         if self.filtered_search == True:
@@ -660,7 +660,7 @@ class RecipeUi(object):
             f"Displaying 1-8 of {len(self._temp_list)} recipes")
 
     def last(self):
-        self._temp_list = self._recipe_processor.recipes
+        self._temp_list = self._recipe_processor.get_recipe_list()
 
         # If there are more things to display, go to next page
         if self.filtered_search == True:

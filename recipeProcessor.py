@@ -3,7 +3,7 @@ import json
 
 
 class RecipeProcessor:
-    recipes = []
+    #recipes = []
     def __init__(self):
         self.recipes = []
 
@@ -27,7 +27,7 @@ class RecipeProcessor:
             self.recipes[r].set_image(self.recipes[r].image_url)
         print("")
 
-    def recipes(self):
+    def get_recipe_list(self):
         return self.recipes
 
     def get_num_recipes(self):
@@ -38,4 +38,4 @@ class RecipeProcessor:
             return self.recipes[ind]
         raise Exception('index out of bounds')
 
-recipeProcessor = RecipeProcessor()
+#recipeProcessor = RecipeProcessor()
